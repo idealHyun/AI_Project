@@ -12,7 +12,8 @@ type Product = {
   name: string;
   price: number;
   image_url?: string | null;
-  features?: string[] | null;
+  features: string;
+  category : string
 };
 
 export default function ProductPage() {
@@ -23,12 +24,12 @@ export default function ProductPage() {
   const [questions,setQuestions] = useState<string[]>([])
 
   const handleReivwButtonClick = async () => {
-    // const response = await axios.post('/api/openai/review', {
-    //   desc: product?.description
-    // });
-    // setQuestions(response.data.questions)
-    // console.log(response.data.questions)
-    // questions.forEach((question)=>console.log(question))
+    const response = await axios.post('/api/openai/questions', {
+      category : product?.category,
+      features: product?.features
+    });
+    setQuestions(response.data.questions)
+    console.log(response.data.questions)
   }
 
   // questions 가 업데이트 된 후에 실행
