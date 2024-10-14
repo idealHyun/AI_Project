@@ -21,6 +21,15 @@ body {
   padding: 4rem;
 }
 
+input {
+  background: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  font: inherit;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

@@ -23,12 +23,12 @@ export default function ProductPage() {
   const [questions,setQuestions] = useState<string[]>([])
 
   const handleReivwButtonClick = async () => {
-    const response = await axios.post('/api/openai/review', {
-      desc: product?.description
-    });
-    setQuestions(response.data.questions)
-    console.log(response.data.questions)
-    questions.forEach((question)=>console.log(question))
+    // const response = await axios.post('/api/openai/review', {
+    //   desc: product?.description
+    // });
+    // setQuestions(response.data.questions)
+    // console.log(response.data.questions)
+    // questions.forEach((question)=>console.log(question))
   }
 
   // questions 가 업데이트 된 후에 실행

@@ -1,8 +1,8 @@
 const express = require('express');
-const { createReviewQuestions } = require('../controllers/openaiController');
+const { createFeatures } = require('../controllers/openaiController');
 
 const router = express.Router();
 
-router.post('/review', createReviewQuestions); // POST /api/openai/
+router.post('/features', createFeatures); // POST /api/openai/fatures
 
 module.exports = router;

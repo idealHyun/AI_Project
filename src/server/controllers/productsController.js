@@ -45,27 +45,29 @@ const getProduct = async (req, res) => {
 const createProduct = async (req,res) =>{
     let connection;
 		try {
-			const { name, description, image_url, price } = req.body;
+			const { name, description, image_url, price,features,category } = req.body;
 			if (!name || !description || !image_url || !price) {
 				return res.status(400).json({
-					error: "All fields (name, description, image_url, price) are required.",
+					error: "All fields (name, description, image_url, price, features, category) are required.",
 				});
 			}
 			connection = await mysql.createConnection(dbConfig);
 			const insertQuery = `
-                INSERT INTO products (name, description, image_url, price)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO products (name, description, image_url, price, features, category)
+                VALUES (?, ?, ?, ?, ?, ?)
             `;
 			await connection.execute(insertQuery, [
 				name,
 				description,
 				image_url,
 				price,
+				features,
+				category
 			]);
-			res.status(201).json({ message: "Product added successfully" });
+			res.status(201).json({ message: "물품이 등록되었습니다." });
 		} catch (error) {
 			console.error("DB 연결/쿼리 오류:", error);
-			res.status(500).json({ error: "Database connection failed" });
+			res.status(500).json({ error: "DB 연결 오류" });
 		} finally {
 			if (connection) await connection.end();
 		}
