@@ -164,9 +164,6 @@ export default function ProductForm({ }: ProductFormProps) {
                     />
                 </div>
 
-
-
-                {/* 폼 제출 버튼 */}
                 <button className=" bg-blue-400 rounded-lg p-2 text-white hover:bg-blue-500">물품 등록하기</button>
             </form>
         </div>

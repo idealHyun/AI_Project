@@ -19,7 +19,7 @@ export default function ProductPage() {
   const router = useRouter();
   const path = usePathname();
   const [product, setProduct] = useState<Product>();
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
   const [questions,setQuestions] = useState<string[]>([])
 
   const handleReivwButtonClick = async () => {
@@ -83,7 +83,7 @@ export default function ProductPage() {
           'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg'
         }
         alt="상품 이미지"
-        className="w-full h-full object-cover rounded-lg"
+        className="w-1/2 h-1/2 object-cover rounded-lg m-auto"
       />
       <h1 className="text-3xl font-bold my-4">{product.name}</h1>
       <p className="text-lg text-gray-700">{product.description}</p>
