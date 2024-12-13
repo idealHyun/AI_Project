@@ -1,46 +1,26 @@
 'use client'
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import Product from "./components/Product";
 import { useRouter } from 'next/navigation';
-
-type Product = {
-  id: number,
-  created_at: string,
-  description: string,
-  name: string,
-  price: number,
-  image_url?: string | null;
-  features?: string[] | null;
-}
 
 export default function Home() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([])
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await fetch('/api/products');
-      const data: Product[] = await response.json();
-      setProducts(data);
-      console.log(data)
-    };
-
-    fetchProducts()
-  }, [])
 
   return (
-    <div className="">
-      <div className="flex justify-between mb-4 border-b-2 border-b-gray-400 py-2">
-        <span className=" text-3xl font-bold">실감인공지능 프로젝트</span>
-        <button className=" bg-blue-400 rounded-lg p-2 text-white hover:bg-blue-500" onClick={() => router.push("/products/upload")}>물품 등록</button>
-      </div >
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-        {products.map((product) =>
-          <Product key={product.id} product={product} />)}
-      </section>
-
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="space-x-4">
+        <button
+          onClick={() => router.push('/api-key')}
+          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          api key 발급하러가기
+        </button>
+        <button
+          onClick={() => router.push('/products')}
+          className="px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          해당 서비스 사용 예시 보기
+        </button>
+      </div>
     </div>
   );
 }
