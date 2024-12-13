@@ -1,8 +1,4 @@
-const OpenAI = require('openai');
-const cheerio = require('cheerio');
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
+const OpenAI = require("openai");
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
@@ -24,14 +20,14 @@ const createFeatures = async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: "gpt-4o",
       messages: [
         {
-          role: 'system',
+          role: "system",
           content:
-            '너는 제품 설명을 바탕으로 제품군을 특정하고 주요 특징을 분석하여, 사용자가 주요 특징을 일상적이고 쉬운 표현으로 바꿔주는 AI이다. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘',
+            "너는 제품 설명을 바탕으로 제품군을 특정하고 주요 특징을 분석하여, 사용자가 주요 특징을 일상적이고 쉬운 표현으로 바꿔주는 AI이다. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘",
         },
-        { role: 'user', content: prompt },
+        { role: "user", content: prompt },
       ],
     });
 
@@ -39,9 +35,9 @@ const createFeatures = async (req, res) => {
 
     res.json(JSON.parse(responseContent));
   } catch (error) {
-    console.error('OpenAI API 호출 오류:', error);
+    console.error("OpenAI API 호출 오류:", error);
     res.status(500).json({
-      error: 'Failed to generate review questions',
+      error: "Failed to generate review questions",
     });
   }
 };
@@ -50,7 +46,7 @@ const createFeatures = async (req, res) => {
 const createQuestions = async (req, res) => {
   const category = req.body.category;
   const features = req.body.features;
-  const arrFeatures = features.split(',').map((feature) => feature.trim());
+  const arrFeatures = features.split(",").map((feature) => feature.trim());
 
   const selectedFeatures =
     arrFeatures.length > 5
@@ -71,14 +67,14 @@ const createQuestions = async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: "gpt-4o",
       messages: [
         {
-          role: 'system',
+          role: "system",
           content:
-            '너는 제품군과 주어진 제품들의 특징을 이용하여 일상적이고 쉬운 표현을 사용한 질문을 만들어, 사용자가 대답하기 쉬운 질문을 만들어주는 AI이다. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘',
+            "너는 제품군과 주어진 제품들의 특징을 이용하여 일상적이고 쉬운 표현을 사용한 질문을 만들어, 사용자가 대답하기 쉬운 질문을 만들어주는 AI이다. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘",
         },
-        { role: 'user', content: prompt },
+        { role: "user", content: prompt },
       ],
     });
 
@@ -88,9 +84,9 @@ const createQuestions = async (req, res) => {
 
     res.json(JSON.parse(responseContent));
   } catch (error) {
-    console.error('OpenAI API 호출 오류:', error);
+    console.error("OpenAI API 호출 오류:", error);
     res.status(500).json({
-      error: 'Failed to generate review questions',
+      error: "Failed to generate review questions",
     });
   }
 };
@@ -101,7 +97,7 @@ const createReviewAnswers = async (req, res) => {
 
   const answersPrompt = answers
     .map((answer) => `질문: ${answer.question}\n답변: ${answer.answer}`)
-    .join('\n');
+    .join("\n");
 
   const prompt = `
         질문에는 질문이 적혀있고, 답변에는 그에 맞는 답변이 적혀있어. 해당 내용들을 모두 합쳐서 하나의 리뷰를 만들어줘. 리뷰는 딱딱한 형식말고 구어체로 해줘.
@@ -111,26 +107,26 @@ const createReviewAnswers = async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: "gpt-4o",
       messages: [
         {
-          role: 'system',
+          role: "system",
           content:
-            '너는 입력받은 질문과 답변을 통해 하나의 리뷰를 만들어주는 AI야. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘',
+            "너는 입력받은 질문과 답변을 통해 하나의 리뷰를 만들어주는 AI야. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘",
         },
-        { role: 'user', content: prompt },
+        { role: "user", content: prompt },
       ],
     });
 
     const content =
       completion?.choices?.[0]?.message?.content?.trim() ||
-      '응답을 처리할 수 없습니다.';
+      "응답을 처리할 수 없습니다.";
 
     res.json({ answer: content });
   } catch (error) {
-    console.error('OpenAI API 호출 오류:', error);
+    console.error("OpenAI API 호출 오류:", error);
     res.status(500).json({
-      error: 'Failed to generate review questions',
+      error: "Failed to generate review questions",
     });
   }
 };

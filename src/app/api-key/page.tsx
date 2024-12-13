@@ -1,31 +1,31 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react';
+import { useState } from "react";
 
 type Props = {};
 
-export default function Page({ }: Props) {
+export default function Page({}: Props) {
   const [apiKey, setApiKey] = useState<string | null>(null);
 
   const fetchApiKey = async () => {
     try {
       // Replace this URL with your actual API endpoint
-      const response = await fetch('/api/api-key');
+      const response = await fetch("/api/api-key");
       if (!response.ok) {
-        throw new Error('Failed to fetch API key');
+        throw new Error("Failed to fetch API key");
       }
       const data = await response.json();
       setApiKey(data.apiKey);
     } catch (error) {
-      console.error('Error fetching API key:', error);
-      alert('API key 발급에 실패했습니다.');
+      console.error("Error fetching API key:", error);
+      alert("API key 발급에 실패했습니다.");
     }
   };
 
   const handleCopy = () => {
     if (apiKey) {
       navigator.clipboard.writeText(apiKey);
-      alert('API key를 복사했습니다.');
+      alert("API key를 복사했습니다.");
     }
   };
 
@@ -40,7 +40,7 @@ export default function Page({ }: Props) {
 
       {apiKey && (
         <div className="flex flex-col items-center space-y-3">
-          <span className="text-lg font-mono bg-gray-100 p-3 rounded-md border border-gray-300">
+          <span className="text-lg font-mono text-black bg-gray-100 p-3 rounded-md border border-gray-300">
             {apiKey}
           </span>
           <button
