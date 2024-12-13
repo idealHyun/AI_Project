@@ -33,6 +33,8 @@ export default function ProductForm({ }: ProductFormProps) {
             const response = await axios.post('/api/openai/features', data);
             setLoading(false)
 
+            console.log(response)
+
             setProduct_line(response.data.category)
             setFeatures(response.data.features.join(', '))
         } catch (error) {
