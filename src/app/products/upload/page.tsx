@@ -30,7 +30,14 @@ export default function ProductForm({}: ProductFormProps) {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/openai/features", data);
+
+      // 요청 시 헤더에 API Key 추가
+      const response = await axios.post("/api/openai/features", data, {
+        headers: {
+          api_key: process.env.API_KEY,
+        },
+      });
+
       setLoading(false);
 
       console.log(response);

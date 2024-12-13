@@ -1,9 +1,8 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { usePathname } from "next/navigation"
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Product = {
   id: number;
@@ -13,7 +12,7 @@ type Product = {
   price: number;
   image_url?: string | null;
   features: string;
-  category: string
+  category: string;
 };
 
 export default function ProductPage() {
@@ -21,8 +20,8 @@ export default function ProductPage() {
   const path = usePathname();
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<string[]>([])
-  const [isModal, setIsModal] = useState(false)
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [isModal, setIsModal] = useState(false);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reviewResult, setReviewResult] = useState(""); // 받은 데이터를 저장
   const [isReviewModal, setIsReviewModal] = useState(false); // 새로운 모달 상태
@@ -36,13 +35,26 @@ export default function ProductPage() {
 
   // 리뷰 작성 버튼 클릭
   const handleReivwButtonClick = async () => {
-    const response = await axios.post('/api/openai/questions', {
-      category: product?.category,
-      features: product?.features
-    });
-    setQuestions(response.data.questions)
-    console.log(response.data.questions)
-  }
+    try {
+      const response = await axios.post(
+        "/api/openai/questions",
+        {
+          category: product?.category,
+          features: product?.features,
+        },
+        {
+          headers: {
+            api_key: process.env.API_KEY,
+          },
+        }
+      );
+      setQuestions(response.data.questions);
+      console.log(response.data.questions);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      alert("질문 생성 중 오류가 발생했습니다.");
+    }
+  };
 
   // 제출 버튼 클릭
   const handleSubmitClick = async () => {
@@ -50,14 +62,20 @@ export default function ProductPage() {
       // 질문과 답변을 매핑하여 객체 배열 생성
       const payload = questions.map((question, index) => ({
         question, // 질문 텍스트
-        answer: answers[index] || '', // 답변이 없으면 빈 문자열
+        answer: answers[index] || "", // 답변이 없으면 빈 문자열
       }));
 
-      // console.log("Payload:", payload);
+      const response = await axios.post(
+        "/api/openai/answer",
+        { answers: payload },
+        {
+          headers: {
+            api_key: process.env.API_KEY,
+          },
+        }
+      );
 
-      const response = await axios.post('/api/openai/answer', { answers: payload });
-
-      console.log(response)
+      console.log(response);
 
       if (response.status === 200) {
         alert("리뷰가 성공적으로 제출되었습니다.");
@@ -78,13 +96,13 @@ export default function ProductPage() {
   useEffect(() => {
     if (questions.length > 0) {
       questions.forEach((question) => console.log(question));
-      setIsModal(true)
+      setIsModal(true);
     }
   }, [questions]);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const id = path.split('/').pop();
+      const id = path.split("/").pop();
 
       try {
         const response = await fetch(`/api/products/${id}`);
@@ -94,7 +112,7 @@ export default function ProductPage() {
         const productData = data[0][0];
         setProduct(productData);
       } catch (error) {
-        console.error('Error fetching product:', error);
+        console.error("Error fetching product:", error);
       } finally {
         setLoading(false); // 로딩 완료 시 false로 설정
       }
@@ -116,15 +134,19 @@ export default function ProductPage() {
   // product가 있을 때 렌더링
   return (
     <div className="p-6">
-      <div className='flex justify-center mb-8'>
-        <button className='text-2xl mr-auto' onClick={() => router.back()}>{"<"}</button>
-        <span className='flex justify-center mr-auto text-2xl'>제품 상세 페이지</span>
+      <div className="flex justify-center mb-8">
+        <button className="text-2xl mr-auto" onClick={() => router.back()}>
+          {"<"}
+        </button>
+        <span className="flex justify-center mr-auto text-2xl">
+          제품 상세 페이지
+        </span>
       </div>
 
       <img
         src={
           product.image_url ||
-          'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg'
+          "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg"
         }
         alt="상품 이미지"
         className="w-1/2 h-1/2 object-cover rounded-lg m-auto"
@@ -132,7 +154,12 @@ export default function ProductPage() {
       <h1 className="text-3xl font-bold my-4">{product.name}</h1>
       <p className="text-lg text-gray-700">{product.description}</p>
       <p className="text-2xl mt-4">{product.price}원</p>
-      <button className=" bg-blue-400 rounded-lg p-2 text-white hover:bg-blue-500" onClick={handleReivwButtonClick}>리뷰 작성</button>
+      <button
+        className=" bg-blue-400 rounded-lg p-2 text-white hover:bg-blue-500"
+        onClick={handleReivwButtonClick}
+      >
+        리뷰 작성
+      </button>
 
       {isModal && questions.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -145,7 +172,7 @@ export default function ProductPage() {
                   <input
                     type="text"
                     placeholder="답변을 적어주세요."
-                    value={answers[index] || ''} // 값이 없으면 빈 문자열
+                    value={answers[index] || ""} // 값이 없으면 빈 문자열
                     onChange={(e) => handleInputChange(index, e.target.value)}
                     className="border-2 border-blue-100 p-2 rounded-md focus:outline-none focus:border-blue-300"
                   />
@@ -167,7 +194,8 @@ export default function ProductPage() {
               </button>
             </div>
           </div>
-        </div>)}
+        </div>
+      )}
 
       {isReviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
