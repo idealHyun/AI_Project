@@ -1,3 +1,4 @@
+// 리뷰 등록 API 요청 처리 추가
 'use client'
 
 import React, { useEffect, useState } from 'react';
@@ -47,20 +48,14 @@ export default function ProductPage() {
   // 제출 버튼 클릭
   const handleSubmitClick = async () => {
     try {
-      // 질문과 답변을 매핑하여 객체 배열 생성
       const payload = questions.map((question, index) => ({
-        question, // 질문 텍스트
-        answer: answers[index] || '', // 답변이 없으면 빈 문자열
+        question,
+        answer: answers[index] || '',
       }));
-
-      // console.log("Payload:", payload);
 
       const response = await axios.post('/api/openai/answer', { answers: payload });
 
-      console.log(response)
-
       if (response.status === 200) {
-        alert("리뷰가 성공적으로 제출되었습니다.");
         setReviewResult(response.data.answer); // 리뷰 결과 저장
         setIsModal(false); // 기존 모달 닫기
         setIsReviewModal(true); // 새로운 모달 열기
@@ -74,7 +69,26 @@ export default function ProductPage() {
     }
   };
 
-  // questions 가 업데이트 된 후에 실행
+  // 리뷰 등록 버튼 클릭
+  const handleRegisterReview = async () => {
+    try {
+      const response = await axios.post(`/api/reviews/${product?.id}`, {
+        productId: product?.id,
+        comment: reviewResult,
+      });
+
+      if (response.status === 201) {
+        alert("리뷰가 성공적으로 등록되었습니다.");
+        setIsReviewModal(false);
+      } else {
+        alert("리뷰 등록에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Error registering review:", error);
+      alert("리뷰 등록 중 오류가 발생했습니다.");
+    }
+  };
+
   useEffect(() => {
     if (questions.length > 0) {
       questions.forEach((question) => console.log(question));
@@ -90,30 +104,26 @@ export default function ProductPage() {
         const response = await fetch(`/api/products/${id}`);
         const data: [Product[]] = await response.json();
 
-        // 이중 배열에서 첫 번째 객체만 추출
         const productData = data[0][0];
         setProduct(productData);
       } catch (error) {
         console.error('Error fetching product:', error);
       } finally {
-        setLoading(false); // 로딩 완료 시 false로 설정
+        setLoading(false);
       }
     };
 
     fetchProduct();
   }, []);
 
-  // 로딩 중일 때 표시할 컴포넌트
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  // product가 없을 경우 에러 메시지 표시
   if (!product) {
     return <p>Product not found.</p>;
   }
 
-  // product가 있을 때 렌더링
   return (
     <div className="p-6">
       <div className='flex justify-center mb-8'>
@@ -145,7 +155,7 @@ export default function ProductPage() {
                   <input
                     type="text"
                     placeholder="답변을 적어주세요."
-                    value={answers[index] || ''} // 값이 없으면 빈 문자열
+                    value={answers[index] || ''}
                     onChange={(e) => handleInputChange(index, e.target.value)}
                     className="border-2 border-blue-100 p-2 rounded-md focus:outline-none focus:border-blue-300"
                   />
@@ -178,7 +188,7 @@ export default function ProductPage() {
               cols={80}
               className="w-full h-48 border-2 border-blue-100 p-2 rounded-md focus:outline-none focus:border-blue-300"
               value={reviewResult}
-              readOnly
+              onChange={(e) => setReviewResult(e.target.value)}
             />
             <div className="mt-6 flex justify-end gap-4">
               <button
@@ -186,6 +196,12 @@ export default function ProductPage() {
                 onClick={() => setIsReviewModal(false)}
               >
                 닫기
+              </button>
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                onClick={handleRegisterReview}
+              >
+                등록
               </button>
             </div>
           </div>
