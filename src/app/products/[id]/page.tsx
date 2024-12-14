@@ -141,47 +141,53 @@ export default function ProductPage() {
   }, [product]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div className="flex justify-center items-center h-screen">
+      <p className="text-gray-500 text-lg">Loading...</p>
+    </div>;
   }
 
   if (!product) {
-    return <p>Product not found.</p>;
+    return <div className="flex justify-center items-center h-screen">
+      <p className="text-gray-500 text-lg">Product not found.</p>
+    </div>;
   }
 
   return (
-    <div className="p-6">
-      <div className='flex justify-center mb-8'>
-        <button className='text-2xl mr-auto' onClick={() => router.back()}>{"<"}</button>
-        <span className='flex justify-center mr-auto text-2xl'>제품 상세 페이지</span>
+    <div className="p-8 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
+        <button className="text-xl text-blue-600 hover:text-blue-800" onClick={() => router.back()}>← Back</button>
+        <h1 className="text-3xl font-bold text-center flex-grow">제품 상세 페이지</h1>
       </div>
 
-      <img
-        src={
-          product.image_url ||
-          'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg'
-        }
-        alt="상품 이미지"
-        className="w-1/2 h-1/2 object-cover rounded-lg m-auto"
-      />
-      <h1 className="text-3xl font-bold my-4">{product.name}</h1>
-      <p className="text-lg text-gray-700">{product.description}</p>
-      <p className="text-2xl mt-4">{product.price}원</p>
-      <button className=" bg-blue-400 rounded-lg p-2 text-white hover:bg-blue-500" onClick={handleReivwButtonClick}>리뷰 작성</button>
+      <div className="shadow-lg p-6 bg-white rounded-lg">
+        <img
+          src={
+            product.image_url ||
+            'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg'
+          }
+          alt="상품 이미지"
+          className="w-full h-80 object-cover rounded-md mb-6"
+        />
+        <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
+        <p className="text-gray-600 mb-4">{product.description}</p>
+        <p className="text-xl font-semibold text-blue-700">{product.price.toLocaleString()}원</p>
+        <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleReivwButtonClick}>리뷰 작성</button>
+      </div>
 
       {isModal && questions.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
             <h2 className="text-2xl font-semibold mb-4">리뷰 작성</h2>
             <div className="flex flex-col gap-4">
               {questions.map((question, index) => (
                 <div key={index} className="flex flex-col gap-2">
-                  <span className="font-medium">{question}</span>
+                  <span className="font-medium text-gray-800">{question}</span>
                   <input
                     type="text"
                     placeholder="답변을 적어주세요."
                     value={answers[index] || ''}
                     onChange={(e) => handleInputChange(index, e.target.value)}
-                    className="border-2 border-blue-100 p-2 rounded-md focus:outline-none focus:border-blue-300"
+                    className="border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
                   />
                 </div>
               ))}
@@ -205,12 +211,11 @@ export default function ProductPage() {
 
       {isReviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
             <h2 className="text-2xl font-semibold mb-4">리뷰 결과</h2>
             <textarea
               rows={10}
-              cols={80}
-              className="w-full h-48 border-2 border-blue-100 p-2 rounded-md focus:outline-none focus:border-blue-300"
+              className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:border-blue-500"
               value={reviewResult}
               onChange={(e) => setReviewResult(e.target.value)}
             />
@@ -233,14 +238,14 @@ export default function ProductPage() {
       )}
 
       {/* 리뷰 목록 표시 */}
-      <div className="mt-8">
+      <div className="mt-10">
         <h2 className="text-2xl font-semibold mb-4">리뷰 목록</h2>
         {reviews.length > 0 ? (
           <ul className="space-y-4">
             {reviews.map((review) => (
-              <li key={review.id} className="p-4 border rounded-md shadow-md">
-                <p className="text-gray-700">{review.comment}</p>
-                <p className="text-sm text-gray-500">작성일: {new Date(review.created_at).toLocaleDateString()}</p>
+              <li key={review.id} className="p-4 border rounded-md shadow-md bg-white">
+                <p className="text-gray-800">{review.comment}</p>
+                <p className="text-sm text-gray-500 mt-2">작성일: {new Date(review.created_at).toLocaleDateString()}</p>
               </li>
             ))}
           </ul>
