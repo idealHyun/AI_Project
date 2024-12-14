@@ -17,13 +17,21 @@ type Product = {
   category: string
 };
 
+type Review = {
+  id: number;
+  product_id: number;
+  comment: string;
+  created_at: string;
+};
+
 export default function ProductPage() {
   const router = useRouter();
   const path = usePathname();
   const [product, setProduct] = useState<Product>();
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
-  const [questions, setQuestions] = useState<string[]>([])
-  const [isModal, setIsModal] = useState(false)
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [isModal, setIsModal] = useState(false);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reviewResult, setReviewResult] = useState(""); // 받은 데이터를 저장
   const [isReviewModal, setIsReviewModal] = useState(false); // 새로운 모달 상태
@@ -41,9 +49,9 @@ export default function ProductPage() {
       category: product?.category,
       features: product?.features
     });
-    setQuestions(response.data.questions)
-    console.log(response.data.questions)
-  }
+    setQuestions(response.data.questions);
+    console.log(response.data.questions);
+  };
 
   // 제출 버튼 클릭
   const handleSubmitClick = async () => {
@@ -80,6 +88,7 @@ export default function ProductPage() {
       if (response.status === 201) {
         alert("리뷰가 성공적으로 등록되었습니다.");
         setIsReviewModal(false);
+        fetchReviews(); // 리뷰 목록 갱신
       } else {
         alert("리뷰 등록에 실패했습니다.");
       }
@@ -89,10 +98,19 @@ export default function ProductPage() {
     }
   };
 
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`/api/reviews/${product?.id}`);
+      setReviews(response.data); // 리뷰 데이터 저장
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
   useEffect(() => {
     if (questions.length > 0) {
       questions.forEach((question) => console.log(question));
-      setIsModal(true)
+      setIsModal(true);
     }
   }, [questions]);
 
@@ -115,6 +133,12 @@ export default function ProductPage() {
 
     fetchProduct();
   }, []);
+
+  useEffect(() => {
+    if (product) {
+      fetchReviews();
+    }
+  }, [product]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -207,6 +231,23 @@ export default function ProductPage() {
           </div>
         </div>
       )}
+
+      {/* 리뷰 목록 표시 */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold mb-4">리뷰 목록</h2>
+        {reviews.length > 0 ? (
+          <ul className="space-y-4">
+            {reviews.map((review) => (
+              <li key={review.id} className="p-4 border rounded-md shadow-md">
+                <p className="text-gray-700">{review.comment}</p>
+                <p className="text-sm text-gray-500">작성일: {new Date(review.created_at).toLocaleDateString()}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">리뷰가 없습니다.</p>
+        )}
+      </div>
     </div>
   );
 }

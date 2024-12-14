@@ -12,13 +12,22 @@ const getProductReview = async (req, res) => {
   let connection;
   try {
     connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute('SELECT * FROM products');
-    return res.json(rows);
+
+    // req.params에서 product_id를 동적으로 추출
+    const product_id = req.params.id;
+
+    // SQL 쿼리에서 product_id를 변수로 사용
+    const [rows] = await connection.execute(
+      'SELECT * FROM products.reviews WHERE reviews.product_id = ?',
+      [product_id],
+    );
+
+    return res.json(rows); // 조회된 리뷰 데이터 반환
   } catch (error) {
     console.error('DB 연결/쿼리 오류:', error);
     return res.status(500).json({ error: 'Database connection failed' });
   } finally {
-    if (connection) await connection.end();
+    if (connection) await connection.end(); // DB 연결 종료
   }
 };
 
