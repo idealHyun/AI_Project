@@ -35,6 +35,7 @@ export default function ProductPage() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reviewResult, setReviewResult] = useState(""); // 받은 데이터를 저장
   const [isReviewModal, setIsReviewModal] = useState(false); // 새로운 모달 상태
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   const handleInputChange = (index: number, value: string) => {
     setAnswers((prev) => ({
@@ -43,14 +44,30 @@ export default function ProductPage() {
     }));
   };
 
+  const LoadingModal = () => (
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+        <p className="text-lg text-gray-800">로딩 중입니다...</p>
+      </div>
+    </div>
+  );
+
   // 리뷰 작성 버튼 클릭
   const handleReivwButtonClick = async () => {
-    const response = await axios.post('/api/openai/questions', {
-      category: product?.category,
-      features: product?.features
-    });
-    setQuestions(response.data.questions);
-    console.log(response.data.questions);
+    setIsLoading(true); // 로딩 시작
+    try {
+      const response = await axios.post('/api/openai/questions', {
+        category: product?.category,
+        features: product?.features
+      });
+      setQuestions(response.data.questions);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      alert("리뷰 작성 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
   };
 
   // 제출 버튼 클릭
@@ -61,11 +78,15 @@ export default function ProductPage() {
         answer: answers[index] || '',
       }));
 
+      setIsModal(false); // 기존 모달 닫기
+      setIsLoading(true);
+
       const response = await axios.post('/api/openai/answer', { answers: payload });
+      setIsLoading(false);
 
       if (response.status === 200) {
         setReviewResult(response.data.answer); // 리뷰 결과 저장
-        setIsModal(false); // 기존 모달 닫기
+
         setIsReviewModal(true); // 새로운 모달 열기
         setAnswers({}); // 입력 초기화
       } else {
@@ -154,6 +175,8 @@ export default function ProductPage() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
+
+      {isLoading && <LoadingModal />}
       <div className="flex items-center justify-between mb-8">
         <button className="text-xl text-blue-600 hover:text-blue-800" onClick={() => router.back()}>← Back</button>
         <h1 className="text-3xl font-bold text-center flex-grow">제품 상세 페이지</h1>
