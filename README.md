@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 실감인공지능 프로젝트
 
-## Getting Started
+### 프로젝트 소개
+위 프로젝트는 OpenAI의 GPT API를 활용하여 제품 설명을 통해 주요 특징을 추출하고,  
+특징을 통해 리뷰 질문지를 생성하고, 해당 답변을 통해 하나의 품질있는 리뷰를 생성하는 것을 목표로합니다.
 
-First, run the development server:
+### 주요 기능
+- 제품 특징 추출
+  - 제품 설명을 분석하여 전문 용어를 배제한 간단하고 이해하기 쉬운 표현으로 주요 특징을 추출합니다.
+  
+- 질문지 생성
+  - 특징을 바탕으로 사용자가 대답하기 쉬운 질문을 자동으로 생성합니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 리뷰 생성
+  - 사용자 답변을 기반으로 구어체 형식의 자연스러운 리뷰를 자동으로 작성합니다.
+
+### 설치 및 실행 방법
+```
+// 프로젝트 설치
+npm install
+
+// 프로젝트 실행
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 실행 후 방법
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. http://localhost:3000 로 접속
+2. API KEY 발급 후 API 요청할 때 사용하는 header에 발급 받은 API KEY 넣기
+3. 물품 등록 및 리뷰 생성하기
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 기술 스택
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Frontend: React, Next.js
+- Backend: Node.js, Express
+- Database: MySQL (Amazon RDS)
+- AI : OpenAI GPT-4o

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from "next/navigation"
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import Review from '@/app/components/Review';
 
 type Product = {
   id: number;
@@ -55,7 +56,7 @@ export default function ProductPage() {
 
   // 리뷰 작성 버튼 클릭
   const handleReivwButtonClick = async () => {
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true);
     try {
       const response = await axios.post('/api/openai/questions', {
         category: product?.category,
@@ -66,7 +67,7 @@ export default function ProductPage() {
       console.error("Error fetching questions:", error);
       alert("리뷰 작성 중 오류가 발생했습니다.");
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
@@ -78,17 +79,17 @@ export default function ProductPage() {
         answer: answers[index] || '',
       }));
 
-      setIsModal(false); // 기존 모달 닫기
+      setIsModal(false);
       setIsLoading(true);
 
       const response = await axios.post('/api/openai/answer', { answers: payload });
       setIsLoading(false);
 
       if (response.status === 200) {
-        setReviewResult(response.data.answer); // 리뷰 결과 저장
+        setReviewResult(response.data.answer);
 
-        setIsReviewModal(true); // 새로운 모달 열기
-        setAnswers({}); // 입력 초기화
+        setIsReviewModal(true);
+        setAnswers({});
       } else {
         alert("리뷰 제출에 실패했습니다.");
       }
@@ -109,7 +110,7 @@ export default function ProductPage() {
       if (response.status === 201) {
         alert("리뷰가 성공적으로 등록되었습니다.");
         setIsReviewModal(false);
-        fetchReviews(); // 리뷰 목록 갱신
+        fetchReviews();
       } else {
         alert("리뷰 등록에 실패했습니다.");
       }
@@ -119,6 +120,7 @@ export default function ProductPage() {
     }
   };
 
+  // 특정 물품의 리뷰 가져오기
   const fetchReviews = async () => {
     try {
       const response = await axios.get(`/api/reviews/${product?.id}`);
@@ -135,6 +137,7 @@ export default function ProductPage() {
     }
   }, [questions]);
 
+  // 특정 물품 조회하기
   useEffect(() => {
     const fetchProduct = async () => {
       const id = path.split('/').pop();
@@ -194,7 +197,7 @@ export default function ProductPage() {
         <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
         <p className="text-gray-600 mb-4">{product.description}</p>
         <p className="text-xl font-semibold text-blue-700">{product.price.toLocaleString()}원</p>
-        <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleReivwButtonClick}>리뷰 작성</button>
+
       </div>
 
       {isModal && questions.length > 0 && (
@@ -226,7 +229,7 @@ export default function ProductPage() {
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 onClick={handleSubmitClick}
               >
-                제출
+                리뷰 생성
               </button>
             </div>
           </div>
@@ -253,7 +256,7 @@ export default function ProductPage() {
                 className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
                 onClick={handleRegisterReview}
               >
-                등록
+                리뷰 등록
               </button>
             </div>
           </div>
@@ -262,19 +265,20 @@ export default function ProductPage() {
 
       {/* 리뷰 목록 표시 */}
       <div className="mt-10">
-        <h2 className="text-2xl font-semibold mb-4">리뷰 목록</h2>
+        <div className='flex justify-between items-center p-4'>
+          <h2 className="text-2xl font-semibold mb-4">리뷰 목록</h2>
+          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleReivwButtonClick}>리뷰 작성</button>
+        </div>
         {reviews.length > 0 ? (
           <ul className="space-y-4">
-            {reviews.map((review) => (
-              <li key={review.id} className="p-4 border rounded-md shadow-md bg-white">
-                <p className="text-gray-800">{review.comment}</p>
-                <p className="text-sm text-gray-500 mt-2">작성일: {new Date(review.created_at).toLocaleDateString()}</p>
-              </li>
+            {reviews.map((review, index) => (
+              <Review key={review.id} review={review} index={index} />
             ))}
           </ul>
         ) : (
           <p className="text-gray-500">리뷰가 없습니다.</p>
         )}
+
       </div>
     </div>
   );
