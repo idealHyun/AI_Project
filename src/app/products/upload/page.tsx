@@ -66,12 +66,12 @@ export default function ProductForm({ }: ProductFormProps) {
 
         try {
             await axios.post('/api/products', productData);
-            alert('Product uploaded successfully!');
+            alert('물품이 업로드 되었습니다.');
         } catch (error) {
             console.error('Error uploading product:', error);
             alert('Failed to upload product.');
         } finally {
-            router.push('/');
+            router.push('/products');
         }
     };
 
