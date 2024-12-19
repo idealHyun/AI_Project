@@ -73,6 +73,17 @@ export default function ProductPage() {
 
   // 제출 버튼 클릭
   const handleSubmitClick = async () => {
+    // 모든 질문에 대한 답변이 1자 이상인지 확인
+    const isAllAnswered = questions.every((_, index) => {
+      const answer = answers[index];
+      return answer && answer.trim().length > 0; // 값이 비어있거나 공백만 있는 경우 false
+    });
+
+    if (!isAllAnswered) {
+      alert("모든 질문에 답변을 작성해 주세요.");
+      return; // 조건을 만족하지 않으면 실행 중단
+    }
+
     try {
       const payload = questions.map((question, index) => ({
         question,
@@ -132,7 +143,6 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (questions.length > 0) {
-      questions.forEach((question) => console.log(question));
       setIsModal(true);
     }
   }, [questions]);

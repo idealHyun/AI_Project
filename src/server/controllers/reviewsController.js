@@ -1,11 +1,5 @@
 const mysql = require('mysql2/promise');
-
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-};
+const dbConfig = require('../config/dbconfig.js');
 
 // 특정 제품 리뷰 가져오기
 const getProductReview = async (req, res) => {

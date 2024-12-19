@@ -59,7 +59,7 @@ export default function ProductForm({ }: ProductFormProps) {
             image_url: imageUrl, // 업로드된 이미지 URL
             price: Number(price),
             features,
-            category : product_line
+            category: product_line
         };
 
         console.log(productData);
@@ -141,7 +141,7 @@ export default function ProductForm({ }: ProductFormProps) {
     };
 
     return (
-        <div>
+        <div className='max-w-7xl mx-auto p-6'>
             <div className="flex justify-between mb-4 border-b-2 border-b-gray-400 py-2">
                 <span className=" text-3xl font-bold">물품 등록 페이지</span>
             </div>
