@@ -1,4 +1,3 @@
-// 리뷰 등록 API 요청 처리 추가
 'use client'
 
 import React, { useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Review from '@/app/components/Review';
+import LoadingModal from '@/app/components/LoadingModal';
 
 type Product = {
   id: number;
@@ -44,15 +44,6 @@ export default function ProductPage() {
       [index]: value, // 인덱스를 키로 사용하여 값을 업데이트
     }));
   };
-
-  const LoadingModal = () => (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-4">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
-        <p className="text-lg text-gray-800">로딩 중입니다...</p>
-      </div>
-    </div>
-  );
 
   // 리뷰 작성 버튼 클릭
   const handleReivwButtonClick = async () => {
@@ -202,7 +193,7 @@ export default function ProductPage() {
             'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo-available_87543-11093.jpg?size=626&ext=jpg'
           }
           alt="상품 이미지"
-          className="w-full h-80 object-cover rounded-md mb-6"
+          className="w-full h-80 object-contain rounded-md mb-6"
         />
         <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
         <p className="text-gray-600 mb-4">{product.description}</p>

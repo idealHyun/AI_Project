@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import LoadingModal from '@/app/components/LoadingModal';
 
 type ProductFormProps = {};
 
@@ -17,7 +18,7 @@ export default function ProductForm({ }: ProductFormProps) {
     const [features, setFeatures] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null); // 업로드할 파일 저장
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleFeatureButtonClick = async (
         e: React.MouseEvent<HTMLButtonElement>
@@ -142,6 +143,8 @@ export default function ProductForm({ }: ProductFormProps) {
 
     return (
         <div className='max-w-7xl mx-auto p-6'>
+
+            {loading && <LoadingModal />}
             <div className="flex justify-between mb-4 border-b-2 border-b-gray-400 py-2">
                 <span className=" text-3xl font-bold">물품 등록 페이지</span>
             </div>

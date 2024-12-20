@@ -17,7 +17,7 @@ type Product = {
 export default function Home() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -65,7 +65,7 @@ export default function Home() {
                 alt={product.name}
                 width={400}
                 height={400}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-contain"
               />
               <div className="p-4">
                 <h2 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h2>
