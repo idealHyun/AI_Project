@@ -31,7 +31,11 @@ export default function ProductForm({ }: ProductFormProps) {
 
         try {
             setLoading(true)
-            const response = await axios.post('/api/openai/features', data);
+            const response = await axios.post('/api/openai/features', data, {
+                headers: {
+                    'api_key': process.env.NEXT_PUBLIC_API_KEY,
+                },
+            });
             setLoading(false)
 
             console.log(response)

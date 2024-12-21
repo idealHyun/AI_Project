@@ -46,17 +46,25 @@ export default function ProductPage() {
   };
 
   // 리뷰 작성 버튼 클릭
-  const handleReivwButtonClick = async () => {
+  const handleReviewButtonClick = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('/api/openai/questions', {
-        category: product?.category,
-        features: product?.features
-      });
+      const response = await axios.post(
+        '/api/openai/questions',
+        {
+          category: product?.category,
+          features: product?.features,
+        },
+        {
+          headers: {
+            'api_key': process.env.NEXT_PUBLIC_API_KEY,
+          },
+        }
+      );
       setQuestions(response.data.questions);
     } catch (error) {
-      console.error("Error fetching questions:", error);
-      alert("리뷰 작성 중 오류가 발생했습니다.");
+      console.error('Error fetching questions:', error);
+      alert('리뷰 작성 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +92,11 @@ export default function ProductPage() {
       setIsModal(false);
       setIsLoading(true);
 
-      const response = await axios.post('/api/openai/answer', { answers: payload });
+      const response = await axios.post('/api/openai/answer', { answers: payload }, {
+        headers: {
+          'api_key': process.env.NEXT_PUBLIC_API_KEY,
+        },
+      });
       setIsLoading(false);
 
       if (response.status === 200) {
@@ -274,7 +286,7 @@ export default function ProductPage() {
       <div className="mt-10">
         <div className='flex justify-between items-center p-4'>
           <h2 className="text-2xl font-semibold mb-4">리뷰 목록</h2>
-          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleReivwButtonClick}>리뷰 작성</button>
+          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" onClick={handleReviewButtonClick}>리뷰 작성</button>
         </div>
         {reviews.length > 0 ? (
           <ul className="space-y-4">
