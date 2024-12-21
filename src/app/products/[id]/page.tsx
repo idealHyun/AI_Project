@@ -197,6 +197,12 @@ export default function ProductPage() {
         />
         <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
         <p className="text-gray-600 mb-4">{product.description}</p>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">특징 요약</h3>
+          {product.features.split(',').map((feature, index) => (
+            <p key={index} className="text-gray-600">- {feature.trim()}</p>
+          ))}
+        </div>
         <p className="text-xl font-semibold text-blue-700">{product.price.toLocaleString()}원</p>
 
       </div>
