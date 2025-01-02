@@ -1,18 +1,15 @@
 const mysql = require('mysql2/promise');
-
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-};
+const dbConfig = require('../config/dbconfig.js');
 
 // 모든 제품 정보 가져오기
 const getProducts = async (req, res) => {
   let connection;
   try {
     connection = await mysql.createConnection(dbConfig);
+
+    // 모든 제품 조회하는 쿼리 실행
     const [rows] = await connection.execute('SELECT * FROM products');
+
     return res.json(rows);
   } catch (error) {
     console.error('DB 연결/쿼리 오류:', error);
@@ -28,10 +25,13 @@ const getProduct = async (req, res) => {
   try {
     connection = await mysql.createConnection(dbConfig);
     const id = req.params.id;
+
+    // 특정 제품 조회하는 쿼리 실행
     const row = await connection.execute(
       'SELECT * FROM products WHERE id = ?',
       [id],
     );
+
     return res.json(row);
   } catch (error) {
     console.error('DB 연결/쿼리 오류:', error);
@@ -54,6 +54,8 @@ const createProduct = async (req, res) => {
       });
     }
     connection = await mysql.createConnection(dbConfig);
+
+    // 특정 제품 추가하는 쿼리 실행
     const insertQuery = `
                 INSERT INTO products (name, description, image_url, price, features, category)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -66,6 +68,7 @@ const createProduct = async (req, res) => {
       features,
       category,
     ]);
+
     res.status(201).json({ message: '물품이 등록되었습니다.' });
   } catch (error) {
     console.error('DB 연결/쿼리 오류:', error);

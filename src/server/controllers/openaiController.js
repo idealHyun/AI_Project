@@ -1,5 +1,4 @@
-const OpenAI = require("openai");
-
+const OpenAI = require('openai');
 const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
 });
@@ -19,6 +18,7 @@ const createFeatures = async (req, res) => {
     `;
 
   try {
+    // GPT-4o 모델 사용
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -66,6 +66,7 @@ const createQuestions = async (req, res) => {
     `;
 
   try {
+    // GPT-4o 모델 사용
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -79,8 +80,6 @@ const createQuestions = async (req, res) => {
     });
 
     const responseContent = completion.choices[0].message.content.trim();
-
-    console.log(responseContent);
 
     res.json(JSON.parse(responseContent));
   } catch (error) {
@@ -106,13 +105,14 @@ const createReviewAnswers = async (req, res) => {
     `;
 
   try {
+    // GPT-4o 모델 사용
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
           content:
-            "너는 입력받은 질문과 답변을 통해 하나의 리뷰를 만들어주는 AI야. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 담아서 보내줘",
+            '너는 입력받은 질문과 답변을 통해 하나의 리뷰를 만들어주는 AI야. 답변은 무조건 마크다운 형식(```)은 없이 객체({})에 다른 key값 없이 담아서 보내줘',
         },
         { role: "user", content: prompt },
       ],
