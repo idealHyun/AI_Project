@@ -1,8 +1,7 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from 'react';
-import { usePathname } from "next/navigation"
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from "next/navigation";
 import axios from 'axios';
 import Review from '@/app/components/Review';
 import LoadingModal from '@/app/components/LoadingModal';
@@ -15,7 +14,7 @@ type Product = {
   price: number;
   image_url?: string | null;
   features: string;
-  category: string
+  category: string;
 };
 
 type Review = {
@@ -153,7 +152,7 @@ export default function ProductPage() {
   // 특정 물품 조회하기
   useEffect(() => {
     const fetchProduct = async () => {
-      const id = path.split('/').pop();
+      const id = path.split("/").pop();
 
       try {
         const response = await fetch(`/api/products/${id}`);
@@ -162,7 +161,7 @@ export default function ProductPage() {
         const productData = data[0][0];
         setProduct(productData);
       } catch (error) {
-        console.error('Error fetching product:', error);
+        console.error("Error fetching product:", error);
       } finally {
         setLoading(false);
       }
@@ -218,7 +217,6 @@ export default function ProductPage() {
         <p className="text-xl font-semibold text-blue-700">{product.price.toLocaleString()}원</p>
 
       </div>
-
       {isModal && questions.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
@@ -252,7 +250,8 @@ export default function ProductPage() {
               </button>
             </div>
           </div>
-        </div>)}
+        </div>
+      )}
 
       {isReviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
